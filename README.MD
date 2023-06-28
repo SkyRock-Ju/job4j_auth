@@ -6,9 +6,6 @@
 
 RESTFul API architecture project.
 
-The view of the system.
-Main page is a search page with table.
-
 
 ## Technology stack
 - Spring Web
