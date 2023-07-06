@@ -31,8 +31,15 @@ public class PersonController {
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
+        var savedPerson = personService.savePerson(person);
+        if (savedPerson.isEmpty()) {
+            return new ResponseEntity<Person>(
+                    person,
+                    HttpStatus.BAD_REQUEST
+            );
+        }
         return new ResponseEntity<Person>(
-                personService.savePerson(person),
+                savedPerson.orElseThrow(),
                 HttpStatus.CREATED
         );
     }
@@ -49,7 +56,9 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        personService.deletePersonById(id);
+        if (personService.deletePersonById(id)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 }

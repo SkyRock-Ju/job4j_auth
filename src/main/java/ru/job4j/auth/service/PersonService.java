@@ -22,8 +22,8 @@ public class PersonService {
         return personRepository.findById(id);
     }
 
-    public Person savePerson(Person person) {
-        return personRepository.save(person);
+    public Optional<Person> savePerson(Person person) {
+        return Optional.of(personRepository.save(person));
     }
 
     public Optional<Person> updatePerson(Person person) {
@@ -33,7 +33,8 @@ public class PersonService {
         return Optional.of(personRepository.save(person));
     }
 
-    public void deletePersonById(int id) {
+    public boolean deletePersonById(int id) {
         personRepository.deleteById(id);
+        return findPersonById(id).isPresent();
     }
 }
