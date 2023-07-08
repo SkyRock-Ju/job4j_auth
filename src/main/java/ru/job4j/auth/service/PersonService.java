@@ -35,6 +35,6 @@ public class PersonService {
 
     public boolean deletePersonById(int id) {
         personRepository.deleteById(id);
-        return findPersonById(id).isPresent();
+        return findPersonById(id).isEmpty();
     }
 }
