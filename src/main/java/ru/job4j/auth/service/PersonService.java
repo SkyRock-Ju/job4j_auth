@@ -34,7 +34,10 @@ public class PersonService {
     }
 
     public boolean deletePersonById(int id) {
-        personRepository.deleteById(id);
-        return findPersonById(id).isEmpty();
+        if (personRepository.findById(id).isPresent()) {
+            personRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
