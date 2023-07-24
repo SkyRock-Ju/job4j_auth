@@ -24,7 +24,7 @@ public class PersonController {
         if (savedPerson.isEmpty()) {
             return new ResponseEntity<>(
                     person,
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.CONFLICT
             );
         }
         return new ResponseEntity<>(
