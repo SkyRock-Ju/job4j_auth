@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -84,6 +85,16 @@ public class PersonController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updatePersonFields(@PathVariable int id, @RequestBody Map<String, String> fields) {
+        if (personService.updatePersonByFields(id, fields).isEmpty()) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         if (personService.deletePersonById(id)) {
@@ -95,17 +106,6 @@ public class PersonController {
     @ExceptionHandler(value = { IllegalArgumentException.class })
     public void illegalArgumentExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", e.getMessage());
-            put("type", e.getClass());
-        }}));
-        LOGGER.error(e.getLocalizedMessage());
-    }
-
-    @ExceptionHandler(value = { NoSuchElementException.class })
-    public void noSuchElementExceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setStatus(HttpStatus.NOT_FOUND.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
             put("message", e.getMessage());

@@ -1,15 +1,20 @@
 package ru.job4j.auth.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 import ru.job4j.auth.model.Person;
 import ru.job4j.auth.repository.PersonRepository;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
@@ -58,5 +63,21 @@ public class PersonService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         return new User(user.get().getLogin(), user.get().getPassword(), emptyList());
+    }
+
+    public Optional<Person> updatePersonByFields(int id, Map<String, String> fields) {
+        var person = personRepository.findById(id);
+        if (person.isEmpty()) {
+            throw new NoSuchElementException(String.format("User with id=%s doesn't exist", id));
+        }
+        fields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Person.class, key);
+            if (field == null) {
+                throw new NullPointerException(String.format("field %s is empty", key));
+            }
+            field.setAccessible(true);
+            ReflectionUtils.setField(field, person.get(), value);
+        });
+        return Optional.of(personRepository.save(person.get()));
     }
 }
