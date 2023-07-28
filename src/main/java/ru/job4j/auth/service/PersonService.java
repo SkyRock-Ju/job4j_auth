@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import ru.job4j.auth.model.Person;
+import ru.job4j.auth.model.PersonDTO;
 import ru.job4j.auth.repository.PersonRepository;
 
 import java.lang.reflect.Field;
@@ -65,19 +66,12 @@ public class PersonService implements UserDetailsService {
         return new User(user.get().getLogin(), user.get().getPassword(), emptyList());
     }
 
-    public Optional<Person> updatePersonByFields(int id, Map<String, String> fields) {
+    public Optional<Person> updatePersonByFields(int id, PersonDTO personDTO) {
         var person = personRepository.findById(id);
         if (person.isEmpty()) {
             throw new NoSuchElementException(String.format("User with id=%s doesn't exist", id));
         }
-        fields.forEach((key, value) -> {
-            Field field = ReflectionUtils.findField(Person.class, key);
-            if (field == null) {
-                throw new NullPointerException(String.format("field %s is empty", key));
-            }
-            field.setAccessible(true);
-            ReflectionUtils.setField(field, person.get(), value);
-        });
+        person.get().setPassword(personDTO.getPassword());
         return Optional.of(personRepository.save(person.get()));
     }
 }

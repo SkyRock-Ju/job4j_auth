@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.model.Person;
+import ru.job4j.auth.model.PersonDTO;
 import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,8 +87,8 @@ public class PersonController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePersonFields(@PathVariable int id, @RequestBody Map<String, String> fields) {
-        if (personService.updatePersonByFields(id, fields).isEmpty()) {
+    public ResponseEntity<Void> updatePersonFields(@PathVariable int id, @RequestBody PersonDTO personDTO) {
+        if (personService.updatePersonByFields(id, personDTO).isEmpty()) {
             return ResponseEntity
                     .notFound()
                     .build();
