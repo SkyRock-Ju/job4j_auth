@@ -1,20 +1,16 @@
 package ru.job4j.auth.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 import ru.job4j.auth.model.Person;
 import ru.job4j.auth.model.PersonDTO;
 import ru.job4j.auth.repository.PersonRepository;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
